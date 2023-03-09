@@ -68,7 +68,13 @@ class _RegisterPageState extends State<RegisterPage> {
                     child: TextFormField(
                       controller: firstNameController,
                       decoration: const InputDecoration(
-                          border: OutlineInputBorder(), hintText: 'First Name'),
+                        label: Text('First Name'),
+                        border: OutlineInputBorder(),
+                        prefixIcon: Icon(
+                          Icons.person,
+                          color: Colors.grey,
+                        ),
+                      ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'First name is required';
@@ -83,7 +89,13 @@ class _RegisterPageState extends State<RegisterPage> {
                     child: TextFormField(
                       controller: lastNameController,
                       decoration: const InputDecoration(
-                          border: OutlineInputBorder(), hintText: 'Last Name'),
+                        label: Text('Last Name'),
+                        border: OutlineInputBorder(),
+                        prefixIcon: Icon(
+                          Icons.person,
+                          color: Colors.grey,
+                        ),
+                      ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Last name is required';
@@ -98,7 +110,13 @@ class _RegisterPageState extends State<RegisterPage> {
                     child: TextFormField(
                       controller: emailController,
                       decoration: const InputDecoration(
-                          border: OutlineInputBorder(), hintText: 'Email'),
+                        label: Text('Email'),
+                        border: OutlineInputBorder(),
+                        prefixIcon: Icon(
+                          Icons.email,
+                          color: Colors.grey,
+                        ),
+                      ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Email is required';
@@ -116,7 +134,13 @@ class _RegisterPageState extends State<RegisterPage> {
                     child: TextFormField(
                       controller: passwordController,
                       decoration: const InputDecoration(
-                          border: OutlineInputBorder(), hintText: 'Password'),
+                        label: Text('Password'),
+                        border: OutlineInputBorder(),
+                        prefixIcon: Icon(
+                          Icons.lock,
+                          color: Colors.grey,
+                        ),
+                      ),
                       obscureText: true,
                       enableSuggestions: false,
                       autocorrect: false,
@@ -137,8 +161,13 @@ class _RegisterPageState extends State<RegisterPage> {
                     child: TextFormField(
                       controller: passwordConfirmController,
                       decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          hintText: 'Confrim Password'),
+                        label: Text('Confirm Password'),
+                        border: OutlineInputBorder(),
+                        prefixIcon: Icon(
+                          Icons.lock,
+                          color: Colors.grey,
+                        ),
+                      ),
                       obscureText: true,
                       enableSuggestions: false,
                       autocorrect: false,
@@ -203,7 +232,7 @@ class _RegisterPageState extends State<RegisterPage> {
         statusColor = Colors.red;
       });
     } else if (response.statusCode == 201) {
-      Navigator.pushNamed(context, '/');
+      Navigator.pushNamed(context, '/login');
     } else {
       var data = json.decode(response.body);
       if (data['email'] != null) {
@@ -213,8 +242,13 @@ class _RegisterPageState extends State<RegisterPage> {
             statusColor = Colors.red;
           });
         }
-      }
-      else {
+      } else if (data['password'] != null) {
+        setState(() {
+          statusMessage =
+              'Enter a more complex password with at least 8 characters.';
+          statusColor = Colors.red;
+        });
+      } else {
         setState(() {
           statusMessage = 'Something went wrong. Try again.';
           statusColor = Colors.red;

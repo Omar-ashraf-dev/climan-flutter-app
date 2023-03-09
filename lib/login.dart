@@ -1,6 +1,10 @@
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'dart:convert';
+import 'dart:io';
+
+import 'package:path_provider/path_provider.dart';
+import 'package:jwt_decode/jwt_decode.dart';
 
 void main() {
   runApp(const LoginPage());
@@ -63,7 +67,13 @@ class _LoginPageState extends State<LoginPage> {
                     child: TextFormField(
                       controller: emailController,
                       decoration: const InputDecoration(
-                          border: OutlineInputBorder(), hintText: 'Email'),
+                        label: Text('Email'),
+                        border: OutlineInputBorder(),
+                        prefixIcon: Icon(
+                          Icons.email,
+                          color: Colors.grey,
+                        ),
+                      ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Email is required';
@@ -81,7 +91,13 @@ class _LoginPageState extends State<LoginPage> {
                     child: TextFormField(
                       controller: passwordController,
                       decoration: const InputDecoration(
-                          border: OutlineInputBorder(), hintText: 'Password'),
+                        label: Text('Password'),
+                        border: OutlineInputBorder(),
+                        prefixIcon: Icon(
+                          Icons.lock,
+                          color: Colors.grey,
+                        ),
+                      ),
                       obscureText: true,
                       enableSuggestions: false,
                       autocorrect: false,
@@ -112,8 +128,9 @@ class _LoginPageState extends State<LoginPage> {
                         children: [
                           const Text('New to CLIMAN?'),
                           TextButton(
-                            onPressed: () => Navigator.pushNamed(context, '/register'), 
-                            child: const Text('Sign up'))
+                              onPressed: () =>
+                                  Navigator.pushNamed(context, '/register'),
+                              child: const Text('Sign up'))
                         ],
                       )),
                 ]),
@@ -124,6 +141,9 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   postData() async {
+    setState(() {
+      statusMessage = '';
+    });
     var response = await http.post(
       Uri.parse('http://10.0.2.2:8000/token'),
       headers: <String, String>{'Content-Type': 'application/json'},
@@ -138,7 +158,23 @@ class _LoginPageState extends State<LoginPage> {
         statusColor = Colors.red;
       });
     } else if (response.statusCode == 200) {
-      Navigator.pushNamed(context, '/');
+      var token = jsonDecode(response.body)['access'];
+      Map<String, dynamic> payload = Jwt.parseJwt(token);
+
+      Directory appDocDirectory = await getApplicationDocumentsDirectory();
+      new Directory(appDocDirectory.path + '/' + 'data')
+          .create(recursive: true);
+
+      new File(appDocDirectory.path + '/' + 'data/' + 'tokenData.txt')
+          .create(recursive: true)
+          .then((File file) async {
+        file.writeAsString(
+          payload['full_name'] + '\n' + payload['email']
+        );
+      });
+
+      // ignore: use_build_context_synchronously
+      Navigator.pushNamed(context, '/home');
     } else {
       setState(() {
         statusMessage = 'Something went wrong. Try again.';

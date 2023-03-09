@@ -1,5 +1,7 @@
 import 'package:climan/home.dart';
+import 'package:climan/homePublic.dart';
 import 'package:climan/login.dart';
+import 'package:climan/profile.dart';
 import 'package:climan/register.dart';
 import 'package:flutter/material.dart';
 
@@ -14,12 +16,14 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: '/login',
+      initialRoute: '/',
       routes: {
         '/login': (context) => const LoginPage(),
         '/register': (context) => const RegisterPage(),
 
-        '/': (context) => const HomePage(),
+        '/': (context) => const HomePublicPage(),
+        '/home': (context) => const HomePage(),
+        '/profile': (context) => const ProfilePage(),
       },
     );
   }
