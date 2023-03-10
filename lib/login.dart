@@ -39,7 +39,7 @@ class _LoginPageState extends State<LoginPage> {
                 children: [
                   Container(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 10.0, vertical: 5.0),
+                        horizontal: 10.0, vertical: 30.0),
                     child: const Image(
                         width: 200.0,
                         image: AssetImage('assets/images/clinic.png')),
@@ -174,7 +174,7 @@ class _LoginPageState extends State<LoginPage> {
       });
 
       // ignore: use_build_context_synchronously
-      Navigator.pushNamed(context, '/home');
+      Navigator.pushNamedAndRemoveUntil(context, "/home", (r) => false);
     } else {
       setState(() {
         statusMessage = 'Something went wrong. Try again.';

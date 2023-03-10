@@ -30,6 +30,20 @@ class _ProfilePageState extends State<ProfilePage> {
     });
   }
 
+  void _deleteData() async {
+    final directory = await getApplicationDocumentsDirectory();
+    final path = directory.path;
+
+    final file = File('$path/data/tokenData.txt');
+    
+    try {
+      await file.delete();
+    }
+    catch(e) {
+      print('Couldn\'t find file');
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -76,6 +90,13 @@ class _ProfilePageState extends State<ProfilePage> {
                         email ?? 'Email not loaded'),
                   ],
                 ),
+                TextButton(
+                    onPressed: () {
+                      _deleteData();
+                      Navigator.pushNamedAndRemoveUntil(
+                          context, "/", (r) => false);
+                    },
+                    child: const Text(style: TextStyle(fontSize: 20), 'Logout'))
               ],
             ))));
   }
